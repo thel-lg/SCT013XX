@@ -1,39 +1,39 @@
-Biblioteca SCT013XX para ESP32
+# Biblioteca SCT013XX para ESP32
 
-Esta biblioteca foi desenvolvida para resolver problemas críticos de leitura de corrente AC com sensores SCT-013 (não invasivos) em microcontroladores ESP32, focando especialmente em circuitos com divisores de tensão personalizados onde o "Zero Virtual" (Offset DC) não é exato.
+Esta biblioteca foi desenvolvida para resolver problemas críticos de leitura de corrente AC com sensores **SCT-013** (não invasivos) em microcontroladores **ESP32**, focando especialmente em circuitos com divisores de tensão personalizados onde o "Zero Virtual" (Offset DC) não é exato.
 
-⚠️ O Problema (Motivação)
+---
+
+## ⚠️ O Problema (Motivação)
 
 A maioria das bibliotecas padrão (como EmonLib) foi projetada para Arduino UNO (5V) e assume cenários ideais que não se aplicam ao ESP32:
 
-Offset DC Incorreto: Em circuitos de 3.3V, o ponto médio teórico é 1.65V. Porém, resistores reais têm tolerância, fazendo o zero real ser 1.54V, 1.58V, etc. Isso gera leituras falsas.
+* **Offset DC Incorreto:** Em circuitos de 3.3V, o ponto médio teórico é 1.65V. Porém, resistores reais têm tolerância, fazendo o zero real ser 1.54V, 1.58V, etc. Isso gera leituras falsas.
+* **Sensores com Tensão de Saída:** Alguns modelos (ex: SCT-013-050 1V) já possuem resistor de carga interno, o que confunde bibliotecas que esperam apenas corrente.
+* **Ruído:** O ADC do ESP32 não é linear, gerando leituras "fantasmas" (0.2A, 0.5A) mesmo com o motor desligado.
 
-Sensores com Tensão de Saída: Alguns modelos (ex: SCT-013-050 1V) já possuem resistor de carga interno, o que confunde bibliotecas que esperam apenas corrente.
+---
 
-Ruído: O ADC do ESP32 não é linear, gerando leituras "fantasmas" (0.2A, 0.5A) mesmo com o motor desligado.
+## ✅ A Solução (Funcionalidades)
 
-✅ A Solução (Funcionalidades)
+Esta biblioteca implementa um algoritmo RMS (*Root Mean Square*) otimizado que permite controle total sobre a matemática da leitura:
 
-Esta biblioteca implementa um algoritmo RMS (Root Mean Square) otimizado que permite controle total sobre a matemática da leitura:
+1.  **Ajuste Fino do Zero (MidRail):** Você define exatamente qual é a tensão DC do seu circuito (ex: `1.5492V`) em vez de usar um valor fixo.
+2.  **Fator de Calibração Universal:** Permite ajustar a leitura final para bater com um Alicate Amperímetro de referência.
+3.  **Noise Gate (Corte):** Define um valor mínimo (ex: `1.0A`). Qualquer leitura abaixo disso é considerada ruído e zerada via software.
 
-Ajuste Fino do Zero (MidRail): Você define exatamente qual é a tensão DC do seu circuito (ex: 1.5492V) em vez de usar um valor fixo.
+---
 
-Fator de Calibração Universal: Permite ajustar a leitura final para bater com um Alicate Amperímetro de referência.
+## 🚀 Como Usar
 
-Noise Gate (Corte): Define um valor mínimo (ex: 1.0A). Qualquer leitura abaixo disso é considerada ruído e zerada via software.
+### 1. Instalação
+1.  Baixe este repositório clicando em **Code > Download ZIP**.
+2.  Na IDE do Arduino, vá em: **Sketch -> Incluir Biblioteca -> Adicionar biblioteca .ZIP**.
+3.  Selecione o arquivo baixado.
 
-🚀 Como Usar
+### 2. Exemplo Básico
 
-1. Instalação
-
-Baixe este repositório clicando em Code > Download ZIP.
-
-Na IDE do Arduino, vá em: Sketch -> Incluir Biblioteca -> Adicionar biblioteca .ZIP.
-
-Selecione o arquivo baixado.
-
-2. Exemplo Básico
-
+```cpp
 #include <SCT013XX.h>
 
 // Defina o pino analógico onde o sensor está ligado
@@ -65,80 +65,4 @@ void loop() {
   
   delay(500);
 }
-
-
-🛠️ Guia de Calibração
-
-Para obter precisão máxima, siga estes passos com um multímetro e um alicate amperímetro:
-
-Passo 1: Ajuste do Zero (MidRail)
-
-Ligue o ESP32 sem carga no sensor.
-
-Meça com um multímetro a tensão DC no pino de entrada do ESP32.
-
-Coloque esse valor exato no 3º parâmetro do configurar (ex: 1.5492).
-
-Passo 2: Ajuste do Fator
-
-Ligue uma carga constante (ex: um motor ou secador).
-
-Meça a corrente real com um Alicate Amperímetro.
-
-Compare com o valor do Serial Monitor.
-
-Se o Serial mostrar menos, AUMENTE o Fator (4º parâmetro).
-
-Se o Serial mostrar mais, DIMINUA o Fator.
-
-Passo 3: Ajuste do Corte (Noise Gate)
-
-Desligue a carga.
-
-Se o monitor mostrar valores como 0.12A ou 0.30A (ruído), defina o 5º parâmetro para um valor logo acima (ex: 0.5 ou 1.0).
-
-📋 Compatibilidade
-
-Placa
-
-Tensão (Vref)
-
-Resolução (ADC)
-
-Nota
-
-ESP32
-
-3.3
-
-4095
-
-Recomendado
-
-Arduino Uno
-
-5.0
-
-1023
-
-Funciona (ajustar parâmetros)
-
-Arduino Mega
-
-5.0
-
-1023
-
-Funciona (ajustar parâmetros)
-
-Sensores Suportados:
-
-SCT-013-030 (30A/1V)
-
-SCT-013-050 (50A/1V)
-
-SCT-013-100 (100A/50mA - requer resistor de carga)
-
-🎓 Autoria
-
-Desenvolvido por Lucas Santos Gama como parte do Trabalho de Conclusão de Curso (TCC) em Eletroeletrônica - SENAI Mariano Ferraz (2025).
+🛠️ Guia de CalibraçãoPara obter precisão máxima, siga estes passos com um multímetro e um alicate amperímetro:Passo 1: Ajuste do Zero (MidRail)Ligue o ESP32 sem carga no sensor.Meça com um multímetro a tensão DC no pino de entrada do ESP32.Coloque esse valor exato no 3º parâmetro do configurar (ex: 1.5492).Passo 2: Ajuste do FatorLigue uma carga constante (ex: um motor ou secador).Meça a corrente real com um Alicate Amperímetro.Compare com o valor do Serial Monitor.Se o Serial mostrar menos, AUMENTE o Fator (4º parâmetro).Se o Serial mostrar mais, DIMINUA o Fator.Passo 3: Ajuste do Corte (Noise Gate)Desligue a carga.Se o monitor mostrar valores como 0.12A ou 0.30A (ruído), defina o 5º parâmetro para um valor logo acima (ex: 0.5 ou 1.0).📋 CompatibilidadePlacaTensão (Vref)Resolução (ADC)NotaESP323.3V4095✅ RecomendadoArduino Uno5.0V1023Funciona (ajustar parâmetros)Arduino Mega5.0V1023Funciona (ajustar parâmetros)Sensores Suportados:SCT-013-030 (30A/1V)SCT-013-050 (50A/1V)SCT-013-100 (100A/50mA - requer resistor de carga)🎓 AutoriaDesenvolvido por Lucas Santos Gama como parte do Trabalho de Conclusão de Curso (TCC) em Eletroeletrônica - SENAI Mariano Ferraz (2025).
