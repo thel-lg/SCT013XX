@@ -19,7 +19,7 @@ A maioria das bibliotecas padrão (como EmonLib) foi projetada para Arduino UNO 
 Esta biblioteca implementa um algoritmo RMS (*Root Mean Square*) otimizado que permite controle total sobre a matemática da leitura:
 
 1.  **Ajuste Fino do Zero (MidRail):** Você define exatamente qual é a tensão DC do seu circuito (ex: `1.5492V`) em vez de usar um valor fixo.
-2.  **Fator de Calibração Universal:** Permite ajustar a leitura final para bater com um Alicate Amperímetro de referência.
+2.  **Fator de Calibração Universal:** Permite definir a corrente nominal exata do sensor.
 3.  **Noise Gate (Corte):** Define um valor mínimo (ex: `1.0A`). Qualquer leitura abaixo disso é considerada ruído e zerada via software.
 
 ---
@@ -63,7 +63,28 @@ void loop() {
 
 -----
 
-## 🔧 Ferramenta de Calibração
+## 🧠 Entendendo os Parâmetros
+
+Para que servem os números dentro do `sensor.configurar`?
+
+### 1\. Fator de Calibração (Corrente do Sensor)
+
+É literalmente a corrente nominal do seu sensor.
+
+  * **Como configurar:** Basta olhar o que está escrito no corpo do sensor.
+      * Se o sensor é de **50A**, coloque `50.0`.
+      * Se o sensor é de **100A**, coloque `100.0`.
+      * Se o sensor é de **30A**, coloque `30.0`.
+
+### 2\. Noise Gate (O "Filtro de Ruído")
+
+É um portão de corte. O ESP32 é muito sensível e capta interferências elétricas do ambiente, mostrando correntes "fantasmas" (ex: `0.20A`) mesmo com tudo desligado.
+
+  * **O que ele faz:** Se você definir o Gate como `0.5`, a biblioteca vai ignorar qualquer leitura abaixo de 0.5A e mostrará `0.00A`, deixando o display limpo quando o motor estiver parado.
+
+-----
+
+## 🔧 Ferramenta de Calibração (Hardware)
 
 Use este código para descobrir a tensão exata do seu "Zero Virtual" (MidRail) antes de configurar o código principal.
 
@@ -106,6 +127,17 @@ void loop() {
 
 -----
 
+## 🛠️ Guia de Ajuste Fino
+
+Para obter precisão máxima:
+
+1.  **Ajuste do Fator:** Ligue uma carga conhecida. Se o valor lido não bater exato (devido à tolerância dos componentes), faça um ajuste fino no valor.
+      * Ex: Sensor de 50A lendo um pouco menos? Mude o Fator de `50.0` para `50.5` ou `51.0`.
+2.  **Ajuste do Noise Gate:** Desligue a carga.
+      * Se o Serial fica oscilando (ex: `0.15A`, `0.08A`), defina o Noise Gate um pouco acima (ex: `0.25`).
+
+-----
+
 ## 📋 Compatibilidade
 
 | Placa | Tensão (Vref) | Resolução (ADC) | Nota |
@@ -116,16 +148,15 @@ void loop() {
 
 ### Sensores Suportados:
 
-Esta biblioteca suporta qualquer sensor da família SCT-013. Abaixo os valores típicos de calibração inicial:
+Use o valor da corrente máxima do sensor como Fator de Calibração:
 
-  * **SCT-013-000** (100A/50mA) -\> *Requer resistor de carga externo (Burden)*
-  * **SCT-013-005** (5A/1V)
-  * **SCT-013-010** (10A/1V)
-  * **SCT-013-020** (20A/1V)
-  * **SCT-013-030** (30A/1V)
-  * **SCT-013-050** (50A/1V)
-  * **SCT-013-060** (60A/1V)
-  * **SCT-013-100** (100A/1V)
+  * **SCT-013-005** -\> Fator: `5.0`
+  * **SCT-013-010** -\> Fator: `10.0`
+  * **SCT-013-020** -\> Fator: `20.0`
+  * **SCT-013-030** -\> Fator: `30.0`
+  * **SCT-013-050** -\> Fator: `50.0`
+  * **SCT-013-060** -\> Fator: `60.0`
+  * **SCT-013-100** -\> Fator: `100.0`
 
 -----
 
@@ -135,4 +166,3 @@ Esta biblioteca suporta qualquer sensor da família SCT-013. Abaixo os valores t
 
 ```
 ```
-
