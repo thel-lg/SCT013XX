@@ -18,7 +18,7 @@ A maioria das bibliotecas padrão (como EmonLib) foi projetada para Arduino UNO 
 
 Para garantir leituras estáveis e sem ruído, recomenda-se a utilização do circuito abaixo, que inclui polarização DC e filtragem de ruído (Filtro RC) na entrada do microcontrolador.
 
-![Esquema Elétrico](<img width="403" height="299" alt="image" src="https://github.com/user-attachments/assets/f907d107-dfe3-424f-a583-d26ad0b4e2b2" />
+(<img width="403" height="299" alt="image" src="https://github.com/user-attachments/assets/f907d107-dfe3-424f-a583-d26ad0b4e2b2" />
 )
 
 > **Nota:** O circuito acima inclui um **Filtro Passa-Baixa (R16 + C29)** essencial para limpar o ruído digital do ESP32.
@@ -186,6 +186,7 @@ Use o valor da corrente máxima do sensor como Fator de Calibração:
 
 ```
 ```
+
 
 
 
