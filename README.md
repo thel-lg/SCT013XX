@@ -1,3 +1,8 @@
+Entendi perfeitamente. Você quer o código do **Exemplo Básico** bem limpo (sem aquele monte de comentários explicativos atrapalhando a visão) e quer adicionar um **Sketch de Calibração** separado para a pessoa descobrir qual é o tal do "MidRail" sem precisar de multímetro.
+
+Aqui está o `README.md` completo e atualizado. É só copiar e substituir tudo:
+
+````markdown
 # Biblioteca SCT013XX para ESP32
 
 Esta biblioteca foi desenvolvida para resolver problemas críticos de leitura de corrente AC com sensores **SCT-013** (não invasivos) em microcontroladores **ESP32**, focando especialmente em circuitos com divisores de tensão personalizados onde o "Zero Virtual" (Offset DC) não é exato.
@@ -31,32 +36,26 @@ Esta biblioteca implementa um algoritmo RMS (*Root Mean Square*) otimizado que p
 2.  Na IDE do Arduino, vá em: **Sketch -> Incluir Biblioteca -> Adicionar biblioteca .ZIP**.
 3.  Selecione o arquivo baixado.
 
-### 2. Exemplo Básico
+### 2. Exemplo Básico (Leitura de Corrente)
 
 ```cpp
 #include <SCT013XX.h>
 
-// Defina o pino analógico onde o sensor está ligado
 #define PINO_SENSOR 35 
 
-// Cria o objeto da biblioteca
 SCT013XX sensor(PINO_SENSOR);
 
 void setup() {
   Serial.begin(115200);
-  
   sensor.begin();
 
-  // --- CONFIGURAÇÃO DE CALIBRAÇÃO (O Pulo do Gato) ---
-  // Parâmetros: (Vref, Resolução ADC, Zero Virtual, Fator, Corte Ruído)
-  
-  // Exemplo para ESP32 (3.3V) e sensor de 50A:
-  // Ajuste o FATOR (50.0) e o ZERO (1.5492) conforme seu hardware!
-  sensor.configurar(3.3, 4095.0, 1.5492, 50.0, 1.0);
+  // Configuração: (Vref, ADC_Bits, MidRail_Volts, Fator_Calibracao, Noise_Gate)
+  // Use o "Sketch de Calibração" abaixo para encontrar o valor exato do MidRail
+  sensor.configurar(3.3, 4095.0, 1.5492, 50.0, 0.5);
 }
 
 void loop() {
-  // Lê 2000 amostras para calcular a média RMS
+  // Lê 2000 amostras
   double amperagem = sensor.calcular(2000);
   
   Serial.print("Corrente: ");
@@ -69,28 +68,46 @@ void loop() {
 
 -----
 
-## 🛠️ Guia de Calibração
+## 🔧 Ferramenta de Calibração
 
-Para obter precisão máxima, siga estes passos com um multímetro e um alicate amperímetro:
+Use este código para descobrir a tensão exata do seu "Zero Virtual" (MidRail) antes de configurar o código principal.
 
-### Passo 1: Ajuste do Zero (MidRail)
+**Passo a passo:**
 
-  * Ligue o ESP32 **sem carga** no sensor.
-  * Meça com um multímetro a tensão DC no pino de entrada do ESP32.
-  * Coloque esse valor exato no **3º parâmetro** do `configurar` (ex: `1.5492`).
+1.  Carregue este código no ESP32.
+2.  Mantenha o sensor conectado, mas **sem passar nenhum fio/carga dentro dele**.
+3.  Abra o Serial Monitor. O valor que aparecer é o seu `MidRail`.
 
-### Passo 2: Ajuste do Fator
+<!-- end list -->
 
-  * Ligue uma carga constante (ex: um motor ou secador).
-  * Meça a corrente real com um **Alicate Amperímetro**.
-  * Compare com o valor do Serial Monitor.
-      * Se o Serial mostrar **menos**, **AUMENTE** o Fator (4º parâmetro).
-      * Se o Serial mostrar **mais**, **DIMINUA** o Fator.
+```cpp
+// Sketch para descobrir o Zero Virtual (MidRail)
+#define PINO_SENSOR 35 
 
-### Passo 3: Ajuste do Corte (Noise Gate)
+void setup() {
+  Serial.begin(115200);
+  pinMode(PINO_SENSOR, INPUT);
+}
 
-  * Desligue a carga.
-  * Se o monitor mostrar valores como `0.12A` ou `0.30A` (ruído), defina o **5º parâmetro** para um valor logo acima (ex: `0.5` ou `1.0`).
+void loop() {
+  long soma = 0;
+  // Tira uma média de 5000 leituras para estabilidade
+  for(int i=0; i<5000; i++){
+    soma += analogRead(PINO_SENSOR);
+  }
+  float mediaADC = soma / 5000.0;
+  
+  // Converte para tensão (Considerando ESP32 3.3V e 12 bits)
+  float voltagemZero = mediaADC * (3.3 / 4095.0);
+
+  Serial.print("Leitura ADC: ");
+  Serial.print(mediaADC);
+  Serial.print(" | MidRail (Use este valor): ");
+  Serial.println(voltagemZero, 4); // 4 casas decimais para precisão
+  
+  delay(1000);
+}
+```
 
 -----
 
