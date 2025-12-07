@@ -1,8 +1,3 @@
-Entendi perfeitamente. Você quer o código do **Exemplo Básico** bem limpo (sem aquele monte de comentários explicativos atrapalhando a visão) e quer adicionar um **Sketch de Calibração** separado para a pessoa descobrir qual é o tal do "MidRail" sem precisar de multímetro.
-
-Aqui está o `README.md` completo e atualizado. É só copiar e substituir tudo:
-
-````markdown
 # Biblioteca SCT013XX para ESP32
 
 Esta biblioteca foi desenvolvida para resolver problemas críticos de leitura de corrente AC com sensores **SCT-013** (não invasivos) em microcontroladores **ESP32**, focando especialmente em circuitos com divisores de tensão personalizados onde o "Zero Virtual" (Offset DC) não é exato.
@@ -140,3 +135,4 @@ Esta biblioteca suporta qualquer sensor da família SCT-013. Abaixo os valores t
 
 ```
 ```
+
