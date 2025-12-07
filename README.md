@@ -18,9 +18,9 @@ A maioria das bibliotecas padrão (como EmonLib) foi projetada para Arduino UNO 
 
 Para garantir leituras estáveis e sem ruído, recomenda-se a utilização do circuito abaixo, que inclui polarização DC e filtragem de ruído (Filtro RC) na entrada do microcontrolador.
 
-![Esquema Elétrico.png)
+![Esquema Elétrico](Esquema_Eletrico.png)
 
-> **Nota:** Certifique-se de salvar a imagem do esquema no seu repositório com o nome `esquema_sct013.png` ou altere o link acima.
+> **Nota:** O circuito acima inclui um **Filtro Passa-Baixa (R16 + C29)** essencial para limpar o ruído digital do ESP32.
 
 **Descrição dos Componentes:**
 * **Divisor de Tensão (Offset DC):**
