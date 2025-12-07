@@ -65,4 +65,61 @@ void loop() {
   
   delay(500);
 }
-🛠️ Guia de CalibraçãoPara obter precisão máxima, siga estes passos com um multímetro e um alicate amperímetro:Passo 1: Ajuste do Zero (MidRail)Ligue o ESP32 sem carga no sensor.Meça com um multímetro a tensão DC no pino de entrada do ESP32.Coloque esse valor exato no 3º parâmetro do configurar (ex: 1.5492).Passo 2: Ajuste do FatorLigue uma carga constante (ex: um motor ou secador).Meça a corrente real com um Alicate Amperímetro.Compare com o valor do Serial Monitor.Se o Serial mostrar menos, AUMENTE o Fator (4º parâmetro).Se o Serial mostrar mais, DIMINUA o Fator.Passo 3: Ajuste do Corte (Noise Gate)Desligue a carga.Se o monitor mostrar valores como 0.12A ou 0.30A (ruído), defina o 5º parâmetro para um valor logo acima (ex: 0.5 ou 1.0).📋 CompatibilidadePlacaTensão (Vref)Resolução (ADC)NotaESP323.3V4095✅ RecomendadoArduino Uno5.0V1023Funciona (ajustar parâmetros)Arduino Mega5.0V1023Funciona (ajustar parâmetros)Sensores Suportados:SCT-013-030 (30A/1V)SCT-013-050 (50A/1V)SCT-013-100 (100A/50mA - requer resistor de carga)🎓 AutoriaDesenvolvido por Lucas Santos Gama como parte do Trabalho de Conclusão de Curso (TCC) em Eletroeletrônica - SENAI Mariano Ferraz (2025).
+````
+
+-----
+
+## 🛠️ Guia de Calibração
+
+Para obter precisão máxima, siga estes passos com um multímetro e um alicate amperímetro:
+
+### Passo 1: Ajuste do Zero (MidRail)
+
+  * Ligue o ESP32 **sem carga** no sensor.
+  * Meça com um multímetro a tensão DC no pino de entrada do ESP32.
+  * Coloque esse valor exato no **3º parâmetro** do `configurar` (ex: `1.5492`).
+
+### Passo 2: Ajuste do Fator
+
+  * Ligue uma carga constante (ex: um motor ou secador).
+  * Meça a corrente real com um **Alicate Amperímetro**.
+  * Compare com o valor do Serial Monitor.
+      * Se o Serial mostrar **menos**, **AUMENTE** o Fator (4º parâmetro).
+      * Se o Serial mostrar **mais**, **DIMINUA** o Fator.
+
+### Passo 3: Ajuste do Corte (Noise Gate)
+
+  * Desligue a carga.
+  * Se o monitor mostrar valores como `0.12A` ou `0.30A` (ruído), defina o **5º parâmetro** para um valor logo acima (ex: `0.5` ou `1.0`).
+
+-----
+
+## 📋 Compatibilidade
+
+| Placa | Tensão (Vref) | Resolução (ADC) | Nota |
+| :--- | :---: | :---: | :--- |
+| **ESP32** | 3.3V | 4095 | ✅ Recomendado |
+| Arduino Uno | 5.0V | 1023 | Funciona (ajustar parâmetros) |
+| Arduino Mega | 5.0V | 1023 | Funciona (ajustar parâmetros) |
+
+### Sensores Suportados:
+
+Esta biblioteca suporta qualquer sensor da família SCT-013. Abaixo os valores típicos de calibração inicial:
+
+  * **SCT-013-000** (100A/50mA) -\> *Requer resistor de carga externo (Burden)*
+  * **SCT-013-005** (5A/1V)
+  * **SCT-013-010** (10A/1V)
+  * **SCT-013-020** (20A/1V)
+  * **SCT-013-030** (30A/1V)
+  * **SCT-013-050** (50A/1V)
+  * **SCT-013-060** (60A/1V)
+  * **SCT-013-100** (100A/1V)
+
+-----
+
+## 🎓 Autoria
+
+> Desenvolvido por **Lucas Santos Gama** como parte do Trabalho de Conclusão de Curso (TCC) em Eletroeletrônica - **SENAI Mariano Ferraz** (2025).
+
+```
+```
