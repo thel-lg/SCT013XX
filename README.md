@@ -14,6 +14,25 @@ A maioria das bibliotecas padrão (como EmonLib) foi projetada para Arduino UNO 
 
 ---
 
+## 🔌 Hardware Recomendado (Esquema)
+
+Para garantir leituras estáveis e sem ruído, recomenda-se a utilização do circuito abaixo, que inclui polarização DC e filtragem de ruído (Filtro RC) na entrada do microcontrolador.
+
+![Esquema Elétrico.png)
+
+> **Nota:** Certifique-se de salvar a imagem do esquema no seu repositório com o nome `esquema_sct013.png` ou altere o link acima.
+
+**Descrição dos Componentes:**
+* **Divisor de Tensão (Offset DC):**
+    * `R14` e `R15` (10kΩ): Criam o ponto central de tensão (aprox. 1.65V).
+    * `C27` (100uF): Capacitor eletrolítico para estabilizar a tensão DC.
+* **Acoplamento do Sensor:**
+    * `C28` (100nF): Capacitor cerâmico para isolar o DC e permitir a passagem apenas do sinal AC do sensor.
+* **Filtro Passa-Baixa (Anti-Ruído):**
+    * `R16` (100R) e `C29` (10nF): Formam um filtro RC passivo logo na entrada do pino (ESP-P35) para eliminar frequências altas e interferências eletromagnéticas.
+
+---
+
 ## ✅ A Solução (Funcionalidades)
 
 Esta biblioteca implementa um algoritmo RMS (*Root Mean Square*) otimizado que permite controle total sobre a matemática da leitura:
@@ -91,7 +110,7 @@ Use este código para descobrir a tensão exata do seu "Zero Virtual" (MidRail) 
 **Passo a passo:**
 
 1.  Carregue este código no ESP32.
-2.  Mantenha o sensor conectado, mas **sem passar nenhum fio/carga dentro dele**.
+2.  Mantenha o sensor conectado (com o circuito montado), mas **sem passar nenhum fio/carga dentro dele**.
 3.  Abra o Serial Monitor. O valor que aparecer é o seu `MidRail`.
 
 <!-- end list -->
