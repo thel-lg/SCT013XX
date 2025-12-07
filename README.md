@@ -30,7 +30,7 @@ Noise Gate (Corte): Define um valor mínimo (ex: 1.0A). Qualquer leitura abaixo 
 
 1. Instalação
 
-Baixe este repositório como arquivo .ZIP.
+Baixe este repositório como arquivo .ZIP (Botão verde "Code" -> "Download ZIP").
 
 Na IDE do Arduino, vá em: Sketch -> Incluir Biblioteca -> Adicionar biblioteca .ZIP.
 
